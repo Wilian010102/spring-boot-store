@@ -8,3 +8,7 @@ spring:
     driver-class-name: org.mariadb.jdbc.Driver
   jpa:
     show-sql: true
+  security:
+    user:
+      name: Willl
+      password: Wan010102

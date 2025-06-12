@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<div class="container">
+    <h2>Login</h2>
+    <form action="/login" method="post">
+        <label for="username">Email:</label>
+        <input type="text" id="username" name="username"/><br/>
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password"/><br/>
+        <button type="submit">Login</button>
+    </form>
+
+    <div th:if="${param.logout}">
+        <p style="color:green;">Kamu sudah logout.</p>
+    </div>
+
+    <div th:if="${param.error}">
+        <p style="color:red;">Login gagal, periksa username atau password.</p>
+    </div>
+</div>
+</body>
+</html>

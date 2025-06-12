@@ -3,26 +3,23 @@ package com.store.ecommerce.controllers;
 import com.store.ecommerce.dtos.ChangePasswordRequest;
 import com.store.ecommerce.dtos.RegisterUserRequest;
 import com.store.ecommerce.dtos.UpdateUserRequest;
-import com.store.ecommerce.entities.User;
 import com.store.ecommerce.mappers.UserMapper;
 import com.store.ecommerce.repositories.UserRepository;
 import com.store.ecommerce.dtos.UserDto;
 import lombok.AllArgsConstructor;
-import org.mapstruct.control.MappingControl;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
-
 import java.util.Set;
 
 @RestController
 @AllArgsConstructor
 @RequestMapping("/users")
 public class UserController {
+    private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
     private final UserMapper userMapper;
     @GetMapping()
@@ -48,6 +45,7 @@ public class UserController {
     @PostMapping
     public ResponseEntity<UserDto> createUser(@RequestBody RegisterUserRequest request, UriComponentsBuilder uriBuilder) {
         var user = userMapper.toEntity(request);
+        user.setPassword(passwordEncoder.encode(user.getPassword())); // <-- Hash password
         userRepository.save(user);
 
         var userDto = userMapper.toDto(user);
@@ -93,8 +91,10 @@ public class UserController {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
         user.setPassword(request.getNewPassword());
+        user.setPassword(passwordEncoder.encode(request.getNewPassword()));
         userRepository.save(user);
 
         return ResponseEntity.noContent().build();
     }
+
 }
